@@ -1,7 +1,5 @@
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
-import os
-import wget
 import youtube_dl
 
 @Client.on_message(filters.command("yt") & filters.private)
@@ -22,9 +20,9 @@ async def download_youtube(_, message: Message):
 
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
-            title = info.get('title', None)
-            thumbnail = info.get('thumbnail', None)
-            formats = info.get('formats', None)
+            title = info.get('title', 'Video')
+            thumbnail = info.get('thumbnail')
+            formats = info.get('formats', [])
 
         buttons = []
         for f in formats:
@@ -50,4 +48,4 @@ async def download_youtube(_, message: Message):
         )
 
     except Exception as e:
-        await msg.edit(f"❌ Failed to fetch video:\n`{str(e)}`")
+        await msg.edit(f"❌ Error:\n`{str(e)}`")
